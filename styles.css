@@ -379,8 +379,8 @@ section { position: relative; background: #ffffff; }
 
 .spice-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: var(--clr-border-dim); margin-top: 4rem; }
 .spice-card { background: #ffffff; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
-.spice-card-img { height: 320px; overflow: hidden; }
-.spice-card-img img { height: 100%; transition: transform 0.8s ease; }
+.spice-card-img { height: auto; overflow: hidden; }
+.spice-card-img img { width: 100%; height: auto; display: block; transition: transform 0.8s ease; }
 .spice-card:hover .spice-card-img img { transform: scale(1.06); }
 .spice-card-body { padding: 2rem; }
 .spice-card-body h3 { font-family: var(--ff-display); font-size: 1.5rem; font-weight: 400; color: #111827; margin-bottom: 0.5rem; }
@@ -484,12 +484,6 @@ footer { background: #f8f9fa; border-top: 1px solid var(--clr-border-dim); paddi
 .footer-bottom { border-top: 1px solid var(--clr-border-dim); padding-top: 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 .footer-bottom p { font-size: 0.78rem; color: var(--clr-text-dim); }
 
-/* WHATSAPP */
-.wa-float { position: fixed; bottom: 2rem; right: 2rem; z-index: 900; width: 56px; height: 56px; background: #25d366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,.4); transition: all var(--transition); animation: waPulse 3s ease-in-out infinite; }
-.wa-float:hover { transform: scale(1.1); animation: none; box-shadow: 0 6px 30px rgba(37,211,102,.6); }
-.wa-tooltip { position: absolute; right: 120%; top: 50%; transform: translateY(-50%); background: #111827; border: 1px solid var(--clr-border); color: #fff; font-size: 0.74rem; font-weight: 500; padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity var(--transition-fast); }
-.wa-float:hover .wa-tooltip { opacity: 1; }
-@keyframes waPulse { 0%,100% { box-shadow: 0 4px 20px rgba(37,211,102,.4); } 50% { box-shadow: 0 4px 40px rgba(37,211,102,.7),0 0 0 8px rgba(37,211,102,.12); } }
 
 /* WHY CHOOSE US — 4 DIFFERENT IMAGES */
 .why-grid-v2 {
