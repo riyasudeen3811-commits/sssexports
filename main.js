@@ -51,38 +51,9 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 });
-// ── Hero Video (Play with Sound Automatically) ──
-const heroVideo = document.querySelector('#hero-video');
-
-if (heroVideo) {
-  const tryUnmutedPlay = () => {
-    heroVideo.muted = false;
-    heroVideo.volume = 1.0;
-    
-    const playPromise = heroVideo.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // Fallback: If browser enforces user gesture rule, start video muted & unmute on instant cursor/touch entry
-        heroVideo.muted = true;
-        heroVideo.play().catch(() => {});
-
-        const enableAudioOnGesture = () => {
-          heroVideo.muted = false;
-          heroVideo.volume = 1.0;
-          heroVideo.play().catch(() => {});
-        };
-
-        ['mousemove', 'mouseenter', 'mouseover', 'pointermove', 'touchstart', 'click', 'scroll', 'keydown', 'pageshow'].forEach(evt => {
-          window.addEventListener(evt, enableAudioOnGesture, { once: true, passive: true });
-          document.addEventListener(evt, enableAudioOnGesture, { once: true, passive: true });
-        });
-      });
-    }
-  };
-
-  tryUnmutedPlay();
-  window.addEventListener('load', tryUnmutedPlay, { once: true });
-}
+// ── Hero Video (Native Autoplay) ──
+// We rely on the HTML5 video attributes (autoplay, loop, muted, playsinline)
+// to ensure the video plays automatically across all browsers without delays.
 
 
 
