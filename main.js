@@ -51,34 +51,49 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 });
-// ── Hero Video (Play with Sound) ──
+// ── Hero Video (Autoplay with Sound + Mute Toggle) ──
 const heroVideo = document.getElementById('hero-video');
+const soundBtn = document.getElementById('hero-sound-btn');
+const soundIconOn = document.getElementById('sound-icon-on');
+const soundIconOff = document.getElementById('sound-icon-off');
+
 if (heroVideo) {
+  // Helper to sync icon display based on mute state
+  const syncSoundUI = () => {
+    if (heroVideo.muted) {
+      if (soundIconOn) soundIconOn.style.display = 'none';
+      if (soundIconOff) soundIconOff.style.display = 'block';
+    } else {
+      if (soundIconOn) soundIconOn.style.display = 'block';
+      if (soundIconOff) soundIconOff.style.display = 'none';
+    }
+  };
+
+  // Attempt sound ON initially
   heroVideo.muted = false;
   heroVideo.volume = 1.0;
+  syncSoundUI();
 
-  const attempt = heroVideo.play();
-
-  if (attempt !== undefined) {
-    attempt.catch(() => {
-      // If browser blocked unmuted autoplay, start muted and listen to all activity
+  const playPromise = heroVideo.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      // If browser policy blocks initial unmuted autoplay, fallback to muted play & update icon
       heroVideo.muted = true;
+      syncSoundUI();
       heroVideo.play().catch(() => {});
+    });
+  }
 
-      const events = [
-        'pointerdown', 'click', 'touchstart', 'touchend', 'keydown',
-        'mousemove', 'mouseenter', 'mouseover', 'pointermove', 'pointerover',
-        'scroll', 'wheel', 'focus'
-      ];
-
-      const unlockAudio = () => {
-        heroVideo.muted = false;
+  // Toggle Mute / Unmute on Button Click
+  if (soundBtn) {
+    soundBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      heroVideo.muted = !heroVideo.muted;
+      if (!heroVideo.muted) {
         heroVideo.volume = 1.0;
         heroVideo.play().catch(() => {});
-        events.forEach(evt => document.removeEventListener(evt, unlockAudio, true));
-      };
-
-      events.forEach(evt => document.addEventListener(evt, unlockAudio, { capture: true, passive: true }));
+      }
+      syncSoundUI();
     });
   }
 }
