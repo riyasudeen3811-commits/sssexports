@@ -51,9 +51,33 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 });
-// ── Hero Video (Native Autoplay) ──
-// We rely on the HTML5 video attributes (autoplay, loop, muted, playsinline)
-// to ensure the video plays automatically across all browsers without delays.
+// ── Hero Video (Force Instant Autoplay) ──
+const heroVideo = document.getElementById('hero-video');
+if (heroVideo) {
+  // Ensure muted (required for autoplay policy)
+  heroVideo.muted = true;
+  // Try to play immediately
+  const playVideo = () => {
+    heroVideo.play().catch(() => {
+      // If autoplay is still blocked, retry on first user interaction
+      const retryPlay = () => {
+        heroVideo.play();
+        document.removeEventListener('click', retryPlay);
+        document.removeEventListener('touchstart', retryPlay);
+        document.removeEventListener('scroll', retryPlay);
+      };
+      document.addEventListener('click', retryPlay, { once: true });
+      document.addEventListener('touchstart', retryPlay, { once: true });
+      document.addEventListener('scroll', retryPlay, { once: true, passive: true });
+    });
+  };
+  // Play as soon as we have enough data, or immediately if already ready
+  if (heroVideo.readyState >= 2) {
+    playVideo();
+  } else {
+    heroVideo.addEventListener('loadeddata', playVideo, { once: true });
+  }
+}
 
 
 
