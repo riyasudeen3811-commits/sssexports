@@ -51,31 +51,29 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 });
-// ── Hero Video (Force Instant Autoplay) ──
+// ── Hero Video (Play with Sound) ──
 const heroVideo = document.getElementById('hero-video');
 if (heroVideo) {
-  // Ensure muted (required for autoplay policy)
-  heroVideo.muted = true;
-  // Try to play immediately
-  const playVideo = () => {
-    heroVideo.play().catch(() => {
-      // If autoplay is still blocked, retry on first user interaction
-      const retryPlay = () => {
-        heroVideo.play();
-        document.removeEventListener('click', retryPlay);
-        document.removeEventListener('touchstart', retryPlay);
-        document.removeEventListener('scroll', retryPlay);
+  // Try playing WITH sound first
+  heroVideo.muted = false;
+  const playWithSound = heroVideo.play();
+
+  if (playWithSound !== undefined) {
+    playWithSound.catch(() => {
+      // Browser blocked unmuted autoplay — play muted, then unmute on first interaction
+      heroVideo.muted = true;
+      heroVideo.play();
+
+      const unmute = () => {
+        heroVideo.muted = false;
+        document.removeEventListener('click', unmute);
+        document.removeEventListener('scroll', unmute);
+        document.removeEventListener('touchstart', unmute);
       };
-      document.addEventListener('click', retryPlay, { once: true });
-      document.addEventListener('touchstart', retryPlay, { once: true });
-      document.addEventListener('scroll', retryPlay, { once: true, passive: true });
+      document.addEventListener('click', unmute);
+      document.addEventListener('scroll', unmute, { passive: true });
+      document.addEventListener('touchstart', unmute);
     });
-  };
-  // Play as soon as we have enough data, or immediately if already ready
-  if (heroVideo.readyState >= 2) {
-    playVideo();
-  } else {
-    heroVideo.addEventListener('loadeddata', playVideo, { once: true });
   }
 }
 
