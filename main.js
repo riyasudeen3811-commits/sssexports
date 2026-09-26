@@ -54,30 +54,31 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 // ── Hero Video (Play with Sound) ──
 const heroVideo = document.getElementById('hero-video');
 if (heroVideo) {
-  // Step 1: Try to play WITH sound
   heroVideo.muted = false;
+  heroVideo.volume = 1.0;
+
   const attempt = heroVideo.play();
 
   if (attempt !== undefined) {
     attempt.catch(() => {
-      // Step 2: Browser blocked sound — play muted first so video starts
+      // If browser blocked unmuted autoplay, start muted and listen to all activity
       heroVideo.muted = true;
       heroVideo.play().catch(() => {});
 
-      // Step 3: Unmute on first REAL user gesture (click/tap/keypress)
-      // NOTE: scroll does NOT count as a user gesture for audio policy
+      const events = [
+        'pointerdown', 'click', 'touchstart', 'touchend', 'keydown',
+        'mousemove', 'mouseenter', 'mouseover', 'pointermove', 'pointerover',
+        'scroll', 'wheel', 'focus'
+      ];
+
       const unlockAudio = () => {
         heroVideo.muted = false;
-        // Some browsers need a fresh play() call after unmuting
+        heroVideo.volume = 1.0;
         heroVideo.play().catch(() => {});
-        // Clean up all listeners
-        ['pointerdown', 'click', 'touchstart', 'keydown'].forEach(evt =>
-          document.removeEventListener(evt, unlockAudio, true)
-        );
+        events.forEach(evt => document.removeEventListener(evt, unlockAudio, true));
       };
-      ['pointerdown', 'click', 'touchstart', 'keydown'].forEach(evt =>
-        document.addEventListener(evt, unlockAudio, { capture: true, once: true })
-      );
+
+      events.forEach(evt => document.addEventListener(evt, unlockAudio, { capture: true, passive: true }));
     });
   }
 }

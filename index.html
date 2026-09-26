@@ -100,6 +100,19 @@
       <source src="vide.mp4" type="video/mp4">
       <img src="hero_main.jpg" alt="SSS Exports agricultural export container ship and Indian spices produce">
     </video>
+    <script>
+      (function() {
+        var v = document.getElementById('hero-video');
+        if (v) {
+          v.muted = false;
+          v.volume = 1.0;
+          var p = v.play();
+          if (p !== undefined) {
+            p.catch(function() {});
+          }
+        }
+      })();
+    </script>
   </div>
   <div class="hero-content" style="padding-top: 60px; transform: translateY(-15px);">
     <div class="hero-eyebrow" style="letter-spacing:0.35em;font-size:0.7rem;margin-bottom:0.4rem;">EST. 2013 · CHENNAI, INDIA</div>
